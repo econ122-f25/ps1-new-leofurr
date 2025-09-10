@@ -1,6 +1,6 @@
 ---
 title: "Problem Set 1"
-author: "Your Name"
+author: "Leo Furr"
 date: "`r Sys.Date()`"
 output: github_document
 ---
@@ -40,6 +40,8 @@ This section will test your understanding of basic R syntax, data types, and vec
 
 ```{r}
 # Your code here
+# 1
+course_name <- "Introduction to Data Science"
 ```
 
 ---
