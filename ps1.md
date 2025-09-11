@@ -1,7 +1,7 @@
 Problem Set 1
 ================
 Leo Furr
-2025-09-10
+2025-09-11
 
 ### Introduction
 
@@ -110,6 +110,16 @@ mean(temperatures)
 
     ## [1] 23.4
 
+``` r
+#3 
+temperatures <- c(22, 25, 19, 28, 23, 30)
+#4 
+is_hot <- temperatures >= 25
+print(is_hot)
+```
+
+    ## [1] FALSE  TRUE FALSE  TRUE FALSE  TRUE
+
 ------------------------------------------------------------------------
 
 ## Part 1: `dplyr` Fundamentals with `mtcars` (25 minutes)
@@ -133,9 +143,104 @@ various car models from 1973-74.
 mtcars_processed <- mtcars %>%
   rownames_to_column("car_model")
 
+mtcars
+```
+
+    ##                      mpg cyl  disp  hp drat    wt  qsec vs am gear carb
+    ## Mazda RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
+    ## Mazda RX4 Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
+    ## Datsun 710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
+    ## Hornet 4 Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
+    ## Hornet Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2
+    ## Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1
+    ## Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
+    ## Merc 240D           24.4   4 146.7  62 3.69 3.190 20.00  1  0    4    2
+    ## Merc 230            22.8   4 140.8  95 3.92 3.150 22.90  1  0    4    2
+    ## Merc 280            19.2   6 167.6 123 3.92 3.440 18.30  1  0    4    4
+    ## Merc 280C           17.8   6 167.6 123 3.92 3.440 18.90  1  0    4    4
+    ## Merc 450SE          16.4   8 275.8 180 3.07 4.070 17.40  0  0    3    3
+    ## Merc 450SL          17.3   8 275.8 180 3.07 3.730 17.60  0  0    3    3
+    ## Merc 450SLC         15.2   8 275.8 180 3.07 3.780 18.00  0  0    3    3
+    ## Cadillac Fleetwood  10.4   8 472.0 205 2.93 5.250 17.98  0  0    3    4
+    ## Lincoln Continental 10.4   8 460.0 215 3.00 5.424 17.82  0  0    3    4
+    ## Chrysler Imperial   14.7   8 440.0 230 3.23 5.345 17.42  0  0    3    4
+    ## Fiat 128            32.4   4  78.7  66 4.08 2.200 19.47  1  1    4    1
+    ## Honda Civic         30.4   4  75.7  52 4.93 1.615 18.52  1  1    4    2
+    ## Toyota Corolla      33.9   4  71.1  65 4.22 1.835 19.90  1  1    4    1
+    ## Toyota Corona       21.5   4 120.1  97 3.70 2.465 20.01  1  0    3    1
+    ## Dodge Challenger    15.5   8 318.0 150 2.76 3.520 16.87  0  0    3    2
+    ## AMC Javelin         15.2   8 304.0 150 3.15 3.435 17.30  0  0    3    2
+    ## Camaro Z28          13.3   8 350.0 245 3.73 3.840 15.41  0  0    3    4
+    ## Pontiac Firebird    19.2   8 400.0 175 3.08 3.845 17.05  0  0    3    2
+    ## Fiat X1-9           27.3   4  79.0  66 4.08 1.935 18.90  1  1    4    1
+    ## Porsche 914-2       26.0   4 120.3  91 4.43 2.140 16.70  0  1    5    2
+    ## Lotus Europa        30.4   4  95.1 113 3.77 1.513 16.90  1  1    5    2
+    ## Ford Pantera L      15.8   8 351.0 264 4.22 3.170 14.50  0  1    5    4
+    ## Ferrari Dino        19.7   6 145.0 175 3.62 2.770 15.50  0  1    5    6
+    ## Maserati Bora       15.0   8 301.0 335 3.54 3.570 14.60  0  1    5    8
+    ## Volvo 142E          21.4   4 121.0 109 4.11 2.780 18.60  1  1    4    2
+
+``` r
+mtcars_processed
+```
+
+    ##              car_model  mpg cyl  disp  hp drat    wt  qsec vs am gear carb
+    ## 1            Mazda RX4 21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
+    ## 2        Mazda RX4 Wag 21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
+    ## 3           Datsun 710 22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
+    ## 4       Hornet 4 Drive 21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
+    ## 5    Hornet Sportabout 18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2
+    ## 6              Valiant 18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1
+    ## 7           Duster 360 14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
+    ## 8            Merc 240D 24.4   4 146.7  62 3.69 3.190 20.00  1  0    4    2
+    ## 9             Merc 230 22.8   4 140.8  95 3.92 3.150 22.90  1  0    4    2
+    ## 10            Merc 280 19.2   6 167.6 123 3.92 3.440 18.30  1  0    4    4
+    ## 11           Merc 280C 17.8   6 167.6 123 3.92 3.440 18.90  1  0    4    4
+    ## 12          Merc 450SE 16.4   8 275.8 180 3.07 4.070 17.40  0  0    3    3
+    ## 13          Merc 450SL 17.3   8 275.8 180 3.07 3.730 17.60  0  0    3    3
+    ## 14         Merc 450SLC 15.2   8 275.8 180 3.07 3.780 18.00  0  0    3    3
+    ## 15  Cadillac Fleetwood 10.4   8 472.0 205 2.93 5.250 17.98  0  0    3    4
+    ## 16 Lincoln Continental 10.4   8 460.0 215 3.00 5.424 17.82  0  0    3    4
+    ## 17   Chrysler Imperial 14.7   8 440.0 230 3.23 5.345 17.42  0  0    3    4
+    ## 18            Fiat 128 32.4   4  78.7  66 4.08 2.200 19.47  1  1    4    1
+    ## 19         Honda Civic 30.4   4  75.7  52 4.93 1.615 18.52  1  1    4    2
+    ## 20      Toyota Corolla 33.9   4  71.1  65 4.22 1.835 19.90  1  1    4    1
+    ## 21       Toyota Corona 21.5   4 120.1  97 3.70 2.465 20.01  1  0    3    1
+    ## 22    Dodge Challenger 15.5   8 318.0 150 2.76 3.520 16.87  0  0    3    2
+    ## 23         AMC Javelin 15.2   8 304.0 150 3.15 3.435 17.30  0  0    3    2
+    ## 24          Camaro Z28 13.3   8 350.0 245 3.73 3.840 15.41  0  0    3    4
+    ## 25    Pontiac Firebird 19.2   8 400.0 175 3.08 3.845 17.05  0  0    3    2
+    ## 26           Fiat X1-9 27.3   4  79.0  66 4.08 1.935 18.90  1  1    4    1
+    ## 27       Porsche 914-2 26.0   4 120.3  91 4.43 2.140 16.70  0  1    5    2
+    ## 28        Lotus Europa 30.4   4  95.1 113 3.77 1.513 16.90  1  1    5    2
+    ## 29      Ford Pantera L 15.8   8 351.0 264 4.22 3.170 14.50  0  1    5    4
+    ## 30        Ferrari Dino 19.7   6 145.0 175 3.62 2.770 15.50  0  1    5    6
+    ## 31       Maserati Bora 15.0   8 301.0 335 3.54 3.570 14.60  0  1    5    8
+    ## 32          Volvo 142E 21.4   4 121.0 109 4.11 2.780 18.60  1  1    4    2
+
+``` r
 # Your code starts here: Filter and arrange mtcars_processed
 # Your code here
+
+mtcars_processed %>% filter(cyl <= 6 & mpg >= 20) %>% 
+  arrange(mpg) %>% arrange(desc(cyl))
 ```
+
+    ##         car_model  mpg cyl  disp  hp drat    wt  qsec vs am gear carb
+    ## 1       Mazda RX4 21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
+    ## 2   Mazda RX4 Wag 21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
+    ## 3  Hornet 4 Drive 21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
+    ## 4      Volvo 142E 21.4   4 121.0 109 4.11 2.780 18.60  1  1    4    2
+    ## 5   Toyota Corona 21.5   4 120.1  97 3.70 2.465 20.01  1  0    3    1
+    ## 6      Datsun 710 22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
+    ## 7        Merc 230 22.8   4 140.8  95 3.92 3.150 22.90  1  0    4    2
+    ## 8       Merc 240D 24.4   4 146.7  62 3.69 3.190 20.00  1  0    4    2
+    ## 9   Porsche 914-2 26.0   4 120.3  91 4.43 2.140 16.70  0  1    5    2
+    ## 10      Fiat X1-9 27.3   4  79.0  66 4.08 1.935 18.90  1  1    4    1
+    ## 11    Honda Civic 30.4   4  75.7  52 4.93 1.615 18.52  1  1    4    2
+    ## 12   Lotus Europa 30.4   4  95.1 113 3.77 1.513 16.90  1  1    5    2
+    ## 13       Fiat 128 32.4   4  78.7  66 4.08 2.200 19.47  1  1    4    1
+    ## 14 Toyota Corolla 33.9   4  71.1  65 4.22 1.835 19.90  1  1    4    1
 
 ### Short Answer
 
@@ -144,7 +249,7 @@ characteristics of the cars that appear at the top of your output. What
 does this tell you about the relationship between cylinders and miles
 per gallon in this subset?
 
-------------------------------------------------------------------------
+## Response: At the top of my output, I notice that in this subset there is not a single car with 4 cylinders that has a lower miles per gallon than a car with 6 cylinders. The relationship I notice, then, is that cars with more cylinders tend to have a lower miles per gallon.
 
 ### Task 1.2: Mutating and Selecting
 
@@ -162,12 +267,62 @@ Using the `mtcars_processed` dataset:
 
 ``` r
 # Your code here
+
+#1
+mtcars_processed <- mtcars_processed %>% mutate(hp_per_wt = hp / wt)
+
+#2
+mtcars_processed <- mtcars_processed %>% mutate(qsec_category = case_when(qsec < 17 ~ "Fast", qsec >=17 & qsec < 19 ~ "Medium", qsec >= 19 ~ "Slow"))
+
+#3
+mtcars_processed %>% select(car_model, mpg, hp, wt, hp_per_wt, qsec_category)
 ```
+
+    ##              car_model  mpg  hp    wt hp_per_wt qsec_category
+    ## 1            Mazda RX4 21.0 110 2.620  41.98473          Fast
+    ## 2        Mazda RX4 Wag 21.0 110 2.875  38.26087        Medium
+    ## 3           Datsun 710 22.8  93 2.320  40.08621        Medium
+    ## 4       Hornet 4 Drive 21.4 110 3.215  34.21462          Slow
+    ## 5    Hornet Sportabout 18.7 175 3.440  50.87209        Medium
+    ## 6              Valiant 18.1 105 3.460  30.34682          Slow
+    ## 7           Duster 360 14.3 245 3.570  68.62745          Fast
+    ## 8            Merc 240D 24.4  62 3.190  19.43574          Slow
+    ## 9             Merc 230 22.8  95 3.150  30.15873          Slow
+    ## 10            Merc 280 19.2 123 3.440  35.75581        Medium
+    ## 11           Merc 280C 17.8 123 3.440  35.75581        Medium
+    ## 12          Merc 450SE 16.4 180 4.070  44.22604        Medium
+    ## 13          Merc 450SL 17.3 180 3.730  48.25737        Medium
+    ## 14         Merc 450SLC 15.2 180 3.780  47.61905        Medium
+    ## 15  Cadillac Fleetwood 10.4 205 5.250  39.04762        Medium
+    ## 16 Lincoln Continental 10.4 215 5.424  39.63864        Medium
+    ## 17   Chrysler Imperial 14.7 230 5.345  43.03087        Medium
+    ## 18            Fiat 128 32.4  66 2.200  30.00000          Slow
+    ## 19         Honda Civic 30.4  52 1.615  32.19814        Medium
+    ## 20      Toyota Corolla 33.9  65 1.835  35.42234          Slow
+    ## 21       Toyota Corona 21.5  97 2.465  39.35091          Slow
+    ## 22    Dodge Challenger 15.5 150 3.520  42.61364          Fast
+    ## 23         AMC Javelin 15.2 150 3.435  43.66812        Medium
+    ## 24          Camaro Z28 13.3 245 3.840  63.80208          Fast
+    ## 25    Pontiac Firebird 19.2 175 3.845  45.51365        Medium
+    ## 26           Fiat X1-9 27.3  66 1.935  34.10853        Medium
+    ## 27       Porsche 914-2 26.0  91 2.140  42.52336          Fast
+    ## 28        Lotus Europa 30.4 113 1.513  74.68605          Fast
+    ## 29      Ford Pantera L 15.8 264 3.170  83.28076          Fast
+    ## 30        Ferrari Dino 19.7 175 2.770  63.17690          Fast
+    ## 31       Maserati Bora 15.0 335 3.570  93.83754          Fast
+    ## 32          Volvo 142E 21.4 109 2.780  39.20863        Medium
 
 ### Short Answer
 
 Why might creating `hp_per_wt` and `qsec_category` be useful metrics
 when analyzing car performance, beyond just raw horsepower and weight?
+
+For `hp_per_wt`, having a heavier car naturally requires more horsepower
+to move it, so this metric allows consideration for how much horsepower
+a car has for their weight. And for qsec_category, being aware of very
+small differences in the quarter-mile time doesn’t matter as much
+compared to being aware if they can complete it quickly or slowly, so
+making the variable easier to comprehend at a glance is helpful.
 
 ------------------------------------------------------------------------
 
@@ -184,7 +339,21 @@ Using the `mtcars_processed` dataset:
 
 ``` r
 # Your code here
+
+#1, 2, 3
+mtcars_processed %>% group_by(cyl, am) %>% summarize(avg_mpg = mean(mpg), median_hp = median(hp), count = n()) %>% arrange(cyl) %>% arrange(desc(avg_mpg))
 ```
+
+    ## # A tibble: 6 × 5
+    ## # Groups:   cyl [3]
+    ##     cyl    am avg_mpg median_hp count
+    ##   <dbl> <dbl>   <dbl>     <dbl> <int>
+    ## 1     4     1    28.1      78.5     8
+    ## 2     4     0    22.9      95       3
+    ## 3     6     1    20.6     110       3
+    ## 4     6     0    19.1     116.      4
+    ## 5     8     1    15.4     300.      2
+    ## 6     8     0    15.0     180      12
 
 ### Short Answer
 
@@ -192,6 +361,18 @@ Based on your grouped summary, what general trends do you observe
 regarding average `mpg` and median `hp` across different combinations of
 `cylinders` and `transmission` types? How do these summaries help
 differentiate car characteristics?
+
+Response: The general trends I notice are that mpg tends to be higher
+for cars with less cylinders and for manual cars, and that horsepower
+tends to be higher for cars with more cylinders. A trend between
+horsepower and transmission types is hard to be certain about, though,
+because the data seems to indicate that automatic cars have more
+horsepower except for cars with eight cylinders. However, there are only
+two cars that are manual and have eight cylinders, so more data may be
+required for this data set. My intuition tells me that the cars in this
+subset may be supercars, which explains why their horsepower is so high.
+These summaries help differentiate car characteristics by controlling
+for certain variables that would make broader differentiation unhelpful.
 
 ------------------------------------------------------------------------
 

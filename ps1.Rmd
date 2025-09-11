@@ -77,6 +77,11 @@ temperatures <- c(22, 25, 19, 28, 23)
 #2 
 sum(temperatures)
 mean(temperatures)
+#3 
+temperatures <- c(22, 25, 19, 28, 23, 30)
+#4 
+is_hot <- temperatures >= 25
+print(is_hot)
 ```
 
 ---
@@ -96,13 +101,21 @@ This section focuses on applying core `dplyr` verbs to the classic `mtcars` data
 mtcars_processed <- mtcars %>%
   rownames_to_column("car_model")
 
+mtcars
+mtcars_processed
+
 # Your code starts here: Filter and arrange mtcars_processed
 # Your code here
+
+mtcars_processed %>% filter(cyl <= 6 & mpg >= 20) %>% 
+  arrange(mpg) %>% arrange(desc(cyl))
+
 ```
 
 ### Short Answer
 Based on your filtered and arranged results, briefly describe the characteristics of the cars that appear at the top of your output. What does this tell you about the relationship between cylinders and miles per gallon in this subset?
 
+Response: At the top of my output, I notice that in this subset there is not a single car with 4 cylinders that has a lower miles per gallon than a car with 6 cylinders. The relationship I notice, then, is that cars with more cylinders tend to have a lower miles per gallon. 
 ---
 
 ### Task 1.2: Mutating and Selecting
@@ -118,10 +131,22 @@ Using the `mtcars_processed` dataset:
 
 ```{r}
 # Your code here
+
+#1
+mtcars_processed <- mtcars_processed %>% mutate(hp_per_wt = hp / wt)
+
+#2
+mtcars_processed <- mtcars_processed %>% mutate(qsec_category = case_when(qsec < 17 ~ "Fast", qsec >=17 & qsec < 19 ~ "Medium", qsec >= 19 ~ "Slow"))
+
+#3
+mtcars_processed %>% select(car_model, mpg, hp, wt, hp_per_wt, qsec_category)
+
 ```
 
 ### Short Answer
 Why might creating `hp_per_wt` and `qsec_category` be useful metrics when analyzing car performance, beyond just raw horsepower and weight?
+
+For `hp_per_wt`, having a heavier car naturally requires more horsepower to move it, so this metric allows consideration for how much horsepower a car has for their weight. And for qsec_category, being aware of very small differences in the quarter-mile time doesn't matter as much compared to being aware if they can complete it quickly or slowly, so making the variable easier to comprehend at a glance is helpful.   
 
 ---
 
@@ -135,10 +160,15 @@ Using the `mtcars_processed` dataset:
 
 ```{r}
 # Your code here
+
+#1, 2, 3
+mtcars_processed %>% group_by(cyl, am) %>% summarize(avg_mpg = mean(mpg), median_hp = median(hp), count = n()) %>% arrange(cyl) %>% arrange(desc(avg_mpg))
 ```
 
 ### Short Answer
 Based on your grouped summary, what general trends do you observe regarding average `mpg` and median `hp` across different combinations of `cylinders` and `transmission` types? How do these summaries help differentiate car characteristics?
+
+Response: The general trends I notice are that mpg tends to be higher for cars with less cylinders and for manual cars, and that horsepower tends to be higher for cars with more cylinders. A trend between horsepower and transmission types is hard to be certain about, though, because the data seems to indicate that automatic cars have more horsepower except for cars with eight cylinders. However, there are only two cars that are manual and have eight cylinders, so more data may be required for this data set. My intuition tells me that the cars in this subset may be supercars, which explains why their horsepower is so high. These summaries help differentiate car characteristics by controlling for certain variables that would make broader differentiation unhelpful. 
 
 ---
 
