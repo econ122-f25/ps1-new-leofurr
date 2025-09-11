@@ -46,6 +46,8 @@ and vector operations.
 # Your code here
 # 1
 course_name <- "Introduction to Data Science"
+# 2 
+num_students <- 45L
 ```
 
 ------------------------------------------------------------------------
