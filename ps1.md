@@ -60,6 +60,27 @@ class(num_students) == "integer"
 
     ## [1] TRUE
 
+``` r
+# 4 
+pi_value <- 3.14159
+#5 
+is_active <- TRUE 
+#6 
+# is num_students >= 50?
+check_num_students <- num_students >= 50 
+print(check_num_students)
+```
+
+    ## [1] FALSE
+
+``` r
+# is course_name exactly equal to "introduction to data science"?
+check_course_name <- course_name == "introduction to data science"
+print(check_course_name)
+```
+
+    ## [1] FALSE
+
 ------------------------------------------------------------------------
 
 ### Task 0.2: Working with Vectors
@@ -74,7 +95,20 @@ class(num_students) == "integer"
 
 ``` r
 # Your code here
+
+# 1 
+temperatures <- c(22, 25, 19, 28, 23)
+#2 
+sum(temperatures)
 ```
+
+    ## [1] 117
+
+``` r
+mean(temperatures)
+```
+
+    ## [1] 23.4
 
 ------------------------------------------------------------------------
 

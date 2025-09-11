@@ -47,6 +47,17 @@ num_students <- 45L
 # 3 
 class(course_name) == "character"
 class(num_students) == "integer"
+# 4 
+pi_value <- 3.14159
+#5 
+is_active <- TRUE 
+#6 
+# is num_students >= 50?
+check_num_students <- num_students >= 50 
+print(check_num_students)
+# is course_name exactly equal to "introduction to data science"?
+check_course_name <- course_name == "introduction to data science"
+print(check_course_name)
 ```
 
 --- 
@@ -61,6 +72,11 @@ class(num_students) == "integer"
 ```{r}
 # Your code here
 
+# 1 
+temperatures <- c(22, 25, 19, 28, 23)
+#2 
+sum(temperatures)
+mean(temperatures)
 ```
 
 ---
