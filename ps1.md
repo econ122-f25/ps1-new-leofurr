@@ -48,7 +48,17 @@ and vector operations.
 course_name <- "Introduction to Data Science"
 # 2 
 num_students <- 45L
+# 3 
+class(course_name) == "character"
 ```
+
+    ## [1] TRUE
+
+``` r
+class(num_students) == "integer"
+```
+
+    ## [1] TRUE
 
 ------------------------------------------------------------------------
 
