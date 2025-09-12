@@ -221,21 +221,29 @@ This task demonstrates how creating new variables that depend on previous time p
 
 ```{r}
 # Your code here
+product_sales_wide %>% mutate(Growth_2021 = (Year_2021 - Year_2020) / Year_2020 * 100, Growth_2022 = (Year_2022 - Year_2021) / Year_2021 * 100)
 ```
 
 2.  **Reshape to Long Format:** Reshape `product_sales_wide` into a long format called `product_sales_long`. Pivot the year columns (`Year_2020`, `Year_2021`, `Year_2022`) into two new columns: `Year` and `Sales`. Make sure `Year` is numeric.
 
 ```{r}
 # Your code here
+product_sales_long <- product_sales_wide %>% pivot_longer(cols = Year_2020:Year_2022, names_to = "Year", values_to = "Sales")
+product_sales_long <- product_sales_long %>% mutate(Year = case_when(Year == "Year_2020" ~ 2020, Year == "Year_2021" ~ 2021, Year == "Year_2022" ~ 2022))
+print(product_sales_long)
 ```
 3.  **Analysis in Long Format:** Using the `product_sales_long` dataset, calculate a single `Growth_Rate` column that represents the year-over-year growth for each product. You should use `group_by()` and `lag()`. The formula for growth rate is `(current_year_sales - previous_year_sales) / previous_year_sales * 100`.
 
 ```{r}
 # Your code here
+
+product_sales_long %>% group_by(product) %>% mutate(Growth_Rate = (Sales - lag(Sales)) / lag(Sales) * 100)
 ```
 
 ### Short Answer
 Compare the code required to calculate the year-over-year growth rate in the wide format versus the long format. Which approach is more concise and scalable if you had many more years of data? Why is the long format generally preferred for this type of time-series calculation?
+
+Response: The long-format approach is much more scalable because it only requires one function to calculate for all of the years, whereas if you took the wide-format approach, you would have to recreate the function for each year. Having the year all as one variable allows you to make calculations using the year so that, for instance, you can utilize the lag function. 
 
 ---
 

@@ -462,7 +462,15 @@ previous time periods is much easier in a long (tidy) format.
 
 ``` r
 # Your code here
+product_sales_wide %>% mutate(Growth_2021 = (Year_2021 - Year_2020) / Year_2020 * 100, Growth_2022 = (Year_2022 - Year_2021) / Year_2021 * 100)
 ```
+
+    ## # A tibble: 3 × 6
+    ##   product  Year_2020 Year_2021 Year_2022 Growth_2021 Growth_2022
+    ##   <chr>        <dbl>     <dbl>     <dbl>       <dbl>       <dbl>
+    ## 1 Laptop        1000      1100      1250       10          13.6 
+    ## 2 Monitor        500       550       600       10           9.09
+    ## 3 Keyboard       800       850       900        6.25        5.88
 
 2.  **Reshape to Long Format:** Reshape `product_sales_wide` into a long
     format called `product_sales_long`. Pivot the year columns
@@ -471,7 +479,23 @@ previous time periods is much easier in a long (tidy) format.
 
 ``` r
 # Your code here
+product_sales_long <- product_sales_wide %>% pivot_longer(cols = Year_2020:Year_2022, names_to = "Year", values_to = "Sales")
+product_sales_long <- product_sales_long %>% mutate(Year = case_when(Year == "Year_2020" ~ 2020, Year == "Year_2021" ~ 2021, Year == "Year_2022" ~ 2022))
+print(product_sales_long)
 ```
+
+    ## # A tibble: 9 × 3
+    ##   product   Year Sales
+    ##   <chr>    <dbl> <dbl>
+    ## 1 Laptop    2020  1000
+    ## 2 Laptop    2021  1100
+    ## 3 Laptop    2022  1250
+    ## 4 Monitor   2020   500
+    ## 5 Monitor   2021   550
+    ## 6 Monitor   2022   600
+    ## 7 Keyboard  2020   800
+    ## 8 Keyboard  2021   850
+    ## 9 Keyboard  2022   900
 
 3.  **Analysis in Long Format:** Using the `product_sales_long` dataset,
     calculate a single `Growth_Rate` column that represents the
@@ -481,7 +505,23 @@ previous time periods is much easier in a long (tidy) format.
 
 ``` r
 # Your code here
+
+product_sales_long %>% group_by(product) %>% mutate(Growth_Rate = (Sales - lag(Sales)) / lag(Sales) * 100)
 ```
+
+    ## # A tibble: 9 × 4
+    ## # Groups:   product [3]
+    ##   product   Year Sales Growth_Rate
+    ##   <chr>    <dbl> <dbl>       <dbl>
+    ## 1 Laptop    2020  1000       NA   
+    ## 2 Laptop    2021  1100       10   
+    ## 3 Laptop    2022  1250       13.6 
+    ## 4 Monitor   2020   500       NA   
+    ## 5 Monitor   2021   550       10   
+    ## 6 Monitor   2022   600        9.09
+    ## 7 Keyboard  2020   800       NA   
+    ## 8 Keyboard  2021   850        6.25
+    ## 9 Keyboard  2022   900        5.88
 
 ### Short Answer
 
@@ -489,6 +529,13 @@ Compare the code required to calculate the year-over-year growth rate in
 the wide format versus the long format. Which approach is more concise
 and scalable if you had many more years of data? Why is the long format
 generally preferred for this type of time-series calculation?
+
+Response: The long-format approach is much more scalable because it only
+requires one function to calculate for all of the years, whereas if you
+took the wide-format approach, you would have to recreate the function
+for each year. Having the year all as one variable allows you to make
+calculations using the year so that, for instance, you can utilize the
+lag function.
 
 ------------------------------------------------------------------------
 
