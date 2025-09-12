@@ -559,15 +559,66 @@ handle students who may or may not have corresponding grade records.
 
 ``` r
 # Your code for inner_join and its explanation
+students_demographics %>% 
+  inner_join(student_grades, by = "student_id")
+```
+
+    ## # A tibble: 5 × 7
+    ##   student_id student_name major   enrollment_year course_id semester grade_score
+    ##   <chr>      <chr>        <chr>             <dbl> <chr>     <chr>          <dbl>
+    ## 1 S001       Alice        CS                 2020 CS101     Fall 20…          92
+    ## 2 S001       Alice        CS                 2020 CS102     Spring …          78
+    ## 3 S002       Bob          Math               2021 MA201     Spring …          85
+    ## 4 S003       Charlie      Physics            2020 PH301     Fall 20…          88
+    ## 5 S004       David        CS                 2022 CS205     Spring …          90
+
+``` r
+# 5 rows, Eve and Frank did not make the cut because they did not take any courses, and therefore they were not included in the inner_join. The inner_join function only includes rows that have a match in both data frames.
 ```
 
 ``` r
 # Your code for left_join and its explanation
+
+students_demographics %>% 
+  left_join(student_grades, by = "student_id")
+```
+
+    ## # A tibble: 7 × 7
+    ##   student_id student_name major   enrollment_year course_id semester grade_score
+    ##   <chr>      <chr>        <chr>             <dbl> <chr>     <chr>          <dbl>
+    ## 1 S001       Alice        CS                 2020 CS101     Fall 20…          92
+    ## 2 S001       Alice        CS                 2020 CS102     Spring …          78
+    ## 3 S002       Bob          Math               2021 MA201     Spring …          85
+    ## 4 S003       Charlie      Physics            2020 PH301     Fall 20…          88
+    ## 5 S004       David        CS                 2022 CS205     Spring …          90
+    ## 6 S005       Eve          Biology            2021 <NA>      <NA>              NA
+    ## 7 S007       Frank        History            2023 <NA>      <NA>              NA
+
+``` r
+# 7 rows because Eve and Frank were included because the left_join includes all rows from the first data frame and substitutes NAs for any missing data. 
 ```
 
 ``` r
 # Your code for advanced mutate after left join
+
+students_demographics %>% 
+  left_join(student_grades, by = "student_id") %>% 
+  group_by(student_id, student_name) %>% 
+  mutate(avg_grade_score = mean(grade_score))
 ```
+
+    ## # A tibble: 7 × 8
+    ## # Groups:   student_id, student_name [6]
+    ##   student_id student_name major   enrollment_year course_id semester grade_score
+    ##   <chr>      <chr>        <chr>             <dbl> <chr>     <chr>          <dbl>
+    ## 1 S001       Alice        CS                 2020 CS101     Fall 20…          92
+    ## 2 S001       Alice        CS                 2020 CS102     Spring …          78
+    ## 3 S002       Bob          Math               2021 MA201     Spring …          85
+    ## 4 S003       Charlie      Physics            2020 PH301     Fall 20…          88
+    ## 5 S004       David        CS                 2022 CS205     Spring …          90
+    ## 6 S005       Eve          Biology            2021 <NA>      <NA>              NA
+    ## 7 S007       Frank        History            2023 <NA>      <NA>              NA
+    ## # ℹ 1 more variable: avg_grade_score <dbl>
 
 ### Short Answer
 
@@ -577,7 +628,17 @@ present in one join but not the other, and explain why. What does the
 average grade calculation reveal about students with multiple grades or
 no grades?
 
-------------------------------------------------------------------------
+Response:
+
+The inner_join tibble has five rows, whereas the left_join tibble has
+seven. The difference lies in Eve and Frank, who appear in the left_join
+but not the inner_join because an inner_join only combines observations
+that have a match in both data frames—they did not take any courses, so
+they do not show up in the inner_join. The left join, on the other hand,
+keeps all rows from the first data frame, so Eve and Frank get to stay.
+The average grade score calculation shows that for multiple grades, R
+seamlessly calculates it. However, if an observation has no data to
+calculate the mean, then the average will just be an NA. —
 
 ### Task 2.3: Filtering Joins: Identifying Student Enrollment Status
 
@@ -601,18 +662,51 @@ categories of students based on their enrollment and grade records.
 
 ``` r
 # Your code for question 1 (semi_join)
+students_demographics %>% semi_join(student_grades, by = "student_id")
 ```
+
+    ## # A tibble: 4 × 4
+    ##   student_id student_name major   enrollment_year
+    ##   <chr>      <chr>        <chr>             <dbl>
+    ## 1 S001       Alice        CS                 2020
+    ## 2 S002       Bob          Math               2021
+    ## 3 S003       Charlie      Physics            2020
+    ## 4 S004       David        CS                 2022
 
 ``` r
 # Your code for question 2 (anti_join on students_demographics)
+students_demographics %>% anti_join(student_grades, by = "student_id")
 ```
+
+    ## # A tibble: 2 × 4
+    ##   student_id student_name major   enrollment_year
+    ##   <chr>      <chr>        <chr>             <dbl>
+    ## 1 S005       Eve          Biology            2021
+    ## 2 S007       Frank        History            2023
 
 ``` r
 # Your code for question 3 (anti_join on student_grades)
+
+student_grades %>% anti_join(students_demographics, by = "student_id")
 ```
+
+    ## # A tibble: 1 × 4
+    ##   student_id course_id semester  grade_score
+    ##   <chr>      <chr>     <chr>           <dbl>
+    ## 1 S006       BI101     Fall 2021          75
 
 ### Short Answer
 
 Describe the distinct insights gained from each of the three filtering
 joins in this task. How do these joins help in data validation and
 understanding the completeness of your student records?
+
+Response: The insight I gained from the semi_join is that this function
+allowed me to match up students in the demographics list with students
+that are currently enrolled. Using this function will allow me to filter
+out unnecessary observations in the future. As for the first anti_join,
+this function allowed me to discover any students who were not enrolled.
+This tool will come in handy when, for whatever reason, there is some
+discrepancy that I want to spotlight. The last anti_join was useful for
+a similar purpose—putting to light any observations that do not match up
+with another data frame.

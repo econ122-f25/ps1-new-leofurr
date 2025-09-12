@@ -257,15 +257,39 @@ This task explores combining student demographic information with their academic
 
 ```{r}
 # Your code for inner_join and its explanation
+students_demographics %>% 
+  inner_join(student_grades, by = "student_id")
+
+# 5 rows, Eve and Frank did not make the cut because they did not take any courses, and therefore they were not included in the inner_join. The inner_join function only includes rows that have a match in both data frames.
+
+```
+
 ```{r}
 # Your code for left_join and its explanation
+
+students_demographics %>% 
+  left_join(student_grades, by = "student_id")
+
+# 7 rows because Eve and Frank were included because the left_join includes all rows from the first data frame and substitutes NAs for any missing data. 
+```
+
 ```{r}
 # Your code for advanced mutate after left join
+
+students_demographics %>% 
+  left_join(student_grades, by = "student_id") %>% 
+  group_by(student_id, student_name) %>% 
+  mutate(avg_grade_score = mean(grade_score))
+
 ```
 
 ### Short Answer
 Compare the number of rows and the content of the `inner_join()` and `left_join()` results. Specifically, identify which student(s) are present in one join but not the other, and explain why. What does the average grade calculation reveal about students with multiple grades or no grades?
 
+Response: 
+
+The inner_join tibble has five rows, whereas the left_join tibble has seven. The difference lies in Eve and Frank, who appear in the left_join but not the inner_join because an inner_join only combines observations that have a match in both data frames---they did not take any courses, so they do not show up in the inner_join. The left join, on the other hand, keeps all rows from the first data frame, so Eve and Frank get to stay. 
+The average grade score calculation shows that for multiple grades, R seamlessly calculates it. However, if an observation has no data to calculate the mean, then the average will just be an NA. 
 ---
 
 ### Task 2.3: Filtering Joins: Identifying Student Enrollment Status
@@ -278,14 +302,25 @@ This task focuses on using filtering joins to identify different categories of s
 
 ```{r}
 # Your code for question 1 (semi_join)
+students_demographics %>% semi_join(student_grades, by = "student_id")
+```
+
 ```{r}
 # Your code for question 2 (anti_join on students_demographics)
+students_demographics %>% anti_join(student_grades, by = "student_id")
+
+```
+
 ```{r}
 # Your code for question 3 (anti_join on student_grades)
+
+student_grades %>% anti_join(students_demographics, by = "student_id")
 ```
 
 ### Short Answer
 Describe the distinct insights gained from each of the three filtering joins in this task. How do these joins help in data validation and understanding the completeness of your student records?
+
+Response: The insight I gained from the semi_join is that this function allowed me to match up students in the demographics list with students that are currently enrolled. Using this function will allow me to filter out unnecessary observations in the future. As for the first anti_join, this function allowed me to discover any students who were not enrolled. This tool will come in handy when, for whatever reason, there is some discrepancy that I want to spotlight. The last anti_join was useful for a similar purpose---putting to light any observations that do not match up with another data frame. 
 
 
 
